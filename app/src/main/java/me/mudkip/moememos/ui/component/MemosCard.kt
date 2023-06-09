@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Archive
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.PinDrop
 import androidx.compose.material.icons.outlined.PushPin
@@ -181,6 +182,21 @@ fun MemosCardActionButton(
                         contentDescription = null
                     )
                 })
+            DropdownMenuItem(
+                text = { Text(R.string.delete.string) },
+                onClick = {
+                   scope.launch {
+                       memosViewModel.deleteMemo(memo.id).suspendOnSuccess {
+                           menuExpanded = false
+                       }
+                   }
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.Delete,
+                        contentDescription = null)
+                }
+            )
             DropdownMenuItem(
                 text = { Text(R.string.archive.string) },
                 onClick = {

@@ -159,6 +159,21 @@ fun MemosCardActionButton(
                     )
                 })
             DropdownMenuItem(
+                text = { Text(R.string.delete.string) },
+                onClick = {
+                   scope.launch {
+                       memosViewModel.deleteMemo(memo.id).suspendOnSuccess {
+                           menuExpanded = false
+                       }
+                   }
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.Delete,
+                        contentDescription = null)
+                }
+            )
+            DropdownMenuItem(
                 text = { Text(R.string.archive.string) },
                 onClick = {
                     scope.launch {

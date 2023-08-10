@@ -128,7 +128,40 @@ fun MemoInputPage(
             TextRange(text.selection.start + "- [ ] ".length, text.selection.end + "- [ ] ".length)
         )
     }
+    fun toggleListItem(){
+        val contentBefore = text.text.substring(0, text.selection.min)
+        val lastLineBreak = contentBefore.indexOfLast { it == '\n' }
+        val nextLineBreak = text.text.indexOf('\n', lastLineBreak + 1)
+        val currentLine = text.text.substring(
+            lastLineBreak + 1,
+            if (nextLineBreak == -1) text.text.length else nextLineBreak
+        )
+        val contentBeforeCurrentLine = contentBefore.substring(0, lastLineBreak + 1)
+        val contentAfterCurrentLine = if (nextLineBreak == -1) "" else text.text.substring(nextLineBreak)
 
+        for (prefix in LIST_ITEM_SYMBOL_LIST) {
+            if (!currentLine.startsWith(prefix)) {
+                continue
+            }
+
+            if (prefix == "- ") {
+                text = text.copy(contentBeforeCurrentLine + "- " + currentLine.substring(prefix.length) + contentAfterCurrentLine)
+                return
+            }
+
+            val offset =  "- ".length - prefix.length
+            text = text.copy(
+                contentBeforeCurrentLine + "- [ ] " + currentLine.substring(prefix.length) + contentAfterCurrentLine,
+                TextRange(text.selection.start + offset, text.selection.end + offset)
+            )
+            return
+        }
+
+        text = text.copy(
+            "$contentBeforeCurrentLine- $currentLine$contentAfterCurrentLine",
+            TextRange(text.selection.start + "- ".length, text.selection.end + "- ".length)
+        )
+    }
     fun handleEnter(): Boolean {
         val contentBefore = text.text.substring(0, text.selection.min)
         val lastLineBreak = contentBefore.indexOfLast { it == '\n' }
@@ -290,6 +323,11 @@ fun MemoInputPage(
                     toggleTodoItem()
                 }) {
                     Icon(Icons.Outlined.CheckBox, contentDescription = R.string.add_task.string)
+                }
+                IconButton(onClick = {
+                    toggleListItem()
+                }) {
+                    Icon(Icons.Outlined.List, contentDescription = R.string.add_list.string)
                 }
 
                 IconButton(onClick = {

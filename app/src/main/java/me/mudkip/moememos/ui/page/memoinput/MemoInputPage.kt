@@ -151,7 +151,7 @@ fun MemoInputPage(
 
             val offset =  "- ".length - prefix.length
             text = text.copy(
-                contentBeforeCurrentLine + "- [ ] " + currentLine.substring(prefix.length) + contentAfterCurrentLine,
+                contentBeforeCurrentLine + "- " + currentLine.substring(prefix.length) + contentAfterCurrentLine,
                 TextRange(text.selection.start + offset, text.selection.end + offset)
             )
             return
@@ -298,7 +298,7 @@ fun MemoInputPage(
                                 DropdownMenuItem(
                                     text = { Text(tag) },
                                     onClick = {
-                                        val tagText = "#${tag} "
+                                        val tagText = "$tag "
                                         text = text.copy(
                                             text.text.replaceRange(text.selection.min, text.selection.max, tagText),
                                             TextRange(text.selection.min + tagText.length)
@@ -313,7 +313,13 @@ fun MemoInputPage(
                                     })
                             }
                         }
-                        IconButton(onClick = { tagMenuExpanded = !tagMenuExpanded }) {
+                        IconButton(onClick = {
+                            text = text.copy(
+                                text.text.replaceRange(text.selection.min, text.selection.max, "#"),
+                                TextRange(text.selection.min + 1)
+                            )
+                            tagMenuExpanded = !tagMenuExpanded
+                        }) {
                             Icon(Icons.Outlined.Tag, contentDescription = R.string.tag.string)
                         }
                     }
